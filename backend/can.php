@@ -26,9 +26,9 @@ try {
     die(json_encode(['success' => false, 'message' => 'データベース接続失敗']));
 }
 
-$sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw, timestamp AS time FROM CAN WHERE timestamp > :selectedTime AND ign = 'IGN-OFF' ORDER BY timestamp LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, timestamp AS time FROM CAN WHERE timestamp >= :selectedTime AND timestamp <= (SELECT time FROM endTime) ORDER BY timestamp";
+$sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw, time FROM CAN WHERE time > :selectedTime AND ign = 'IGN-OFF' ORDER BY time LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, time FROM CAN WHERE time >= :selectedTime AND time <= (SELECT time FROM endTime) ORDER BY time";
 if ($userId == 'testuser')
-    $sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw, timestamp AS time FROM testCAN WHERE timestamp > :selectedTime AND ign = 'IGN-OFF' ORDER BY timestamp LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, timestamp AS time FROM testCAN WHERE timestamp >= :selectedTime AND timestamp <= (SELECT time FROM endTime) ORDER BY timestamp";
+    $sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw,time FROM testCAN WHERE time > :selectedTime AND ign = 'IGN-OFF' ORDER BY time LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, time AS time FROM testCAN WHERE time >= :selectedTime AND time <= (SELECT time FROM endTime) ORDER BY time";
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam('selectedTime', $selectedTime);
 if ($stmt->execute()) {

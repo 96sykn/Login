@@ -29,7 +29,7 @@ try {
 
 $sql = "SELECT x, y, z, time FROM G WHERE time >= (SELECT time FROM G ORDER BY ABS(TIMESTAMPDIFF(SECOND, time, :startTime)) ASC LIMIT 1) AND time <= (SELECT time FROM G ORDER BY ABS(TIMESTAMPDIFF(SECOND, time, :endTime)) ASC LIMIT 1)";
 if ($userId == 'testuser')
-    $sql = "SELECT x, y, z, timestamp AS time FROM testG WHERE timestamp >= (SELECT timestamp FROM testG ORDER BY ABS(TIMESTAMPDIFF(SECOND, timestamp, :startTime)) ASC LIMIT 1) AND timestamp <= (SELECT timestamp FROM testG ORDER BY ABS(TIMESTAMPDIFF(SECOND, timestamp, :endTime)) ASC LIMIT 1)";
+    $sql = "SELECT x, y, z, time FROM testG WHERE time >= (SELECT time FROM testG ORDER BY ABS(TIMESTAMPDIFF(SECOND, time, :startTime)) ASC LIMIT 1) AND time <= (SELECT time FROM testG ORDER BY ABS(TIMESTAMPDIFF(SECOND, time, :endTime)) ASC LIMIT 1)";
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam(':startTime', $startTime);
 $stmt->bindParam(':endTime', $endTime);

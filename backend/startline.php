@@ -25,8 +25,8 @@ try {
     die(json_encode(['success' => false, 'message' => 'データベース接続失敗']));
 }
 
-$sql="SELECT timestamp AS time FROM CAN WHERE ign='IGN-ON'";
-if($userId=='testuser')$sql="SELECT timestamp AS time FROM testCAN WHERE ign='IGN-ON'";
+$sql="SELECT time FROM CAN WHERE ign='IGN-ON'";
+if($userId=='testuser')$sql="SELECT time FROM testCAN WHERE ign='IGN-ON'";
 $stmt = $pdo->prepare($sql);
 if ($stmt->execute()) {
     $startline = $stmt->fetchAll(PDO::FETCH_COLUMN);
