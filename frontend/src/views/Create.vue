@@ -2,7 +2,7 @@
     <div class="content">
         <form @submit.prevent="create">
             <div v-if="!flg">
-                <p>作成するアカウントの数</p>
+                <p>作成するアカウントの数を指定してください。</p>
                 <input type="number" min="1" max="50" v-model="createNum" required/>
                 <button type="submit">作成</button>
             </div>

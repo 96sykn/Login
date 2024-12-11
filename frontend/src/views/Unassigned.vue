@@ -9,6 +9,7 @@
                     {{ id }}
                 </li>
             </ul>
+            <p v-else-if="!flg">検索ボタンを押してください。</p>
             <p v-else-if="!error">表示する未割り当てIDがありません。</p>
         </form>
     </div>
@@ -21,7 +22,7 @@ export default {
     data() {
         return {
             unassignedId: [],
-            error: null,
+            error: "",
             flg:false,
         };
     },
