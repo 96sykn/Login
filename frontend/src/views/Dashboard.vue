@@ -151,7 +151,7 @@ export default {
             endTime: this.endTime
           }
         );
-        console.log(response.data);
+        //console.log(response.data);//DEBUG
         if (response.data.success) {
           this.gps = response.data.gps;
           await this.formattingGps();

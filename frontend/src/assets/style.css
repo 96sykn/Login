@@ -142,6 +142,31 @@ form {
     appearance: none;
 }
 
+.result-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 100%;
+}
+
+.result-content button{
+    background-color:#ADB5BD;
+    color:#343a40;
+    text-align: right;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+.result-content button:hover {
+    background-color: #acacac;
+}
+
 .user-section {
     background-color: white;
     padding: 20px;

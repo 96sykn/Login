@@ -13,6 +13,17 @@ $data = json_decode(file_get_contents('php://input'), true);
 $userId = $data['userId'];
 $selectedTime = $data['selectedTime'];
 
+$cacheKey = md5($userId . $selectedTime);
+$cacheFile = __DIR__ . "/../cache/{$cacheKey}.json";
+$cacheTime = 3600;
+
+if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTime) {
+    header('Content-Type: application/json');
+    echo file_get_contents($cacheFile);
+    exit();
+}
+
+
 $host = 'mysql309.phy.lolipop.lan';
 $dbname = 'LAA1593625-test';
 $username = 'LAA1593625';
@@ -51,6 +62,8 @@ if ($stmt->execute()) {
         'message' => 'CAN取得失敗'
     ];
 }
+
+file_put_contents($cacheFile, json_encode($response));
 
 header('Content-Type: application/json');
 echo json_encode($response);

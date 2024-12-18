@@ -1,8 +1,12 @@
 <template>
-  <div id="content">
-    <h2>{{ formattedDate }}</h2>
+  <div class="result-content">
+    <div id="content">
+      <h2>{{ formattedDate }}</h2>
+    </div>
+    <div id="map"></div>
+    <button @click="pageBack">戻る
+    </button>
   </div>
-  <div id="map"></div>
 </template>
 
 <script>
@@ -30,7 +34,9 @@ export default {
     this.initializeMap();
   },
   methods: {
-
+    pageBack(){
+      this.$router.push("/dashboard");
+    },
     calculateCenter() {//各座標の平均をとり地図の中心を決める
       let totalLongitude = 0;
       let totalLatitude = 0;
