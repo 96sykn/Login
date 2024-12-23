@@ -3,7 +3,27 @@
     <div id="content">
       <h2>{{ formattedDate }}</h2>
     </div>
-    <div id="map"></div>
+    <div id="map">
+      <div class="legend-container">
+        <div class="legend">
+          <span style="background-color: #FF0101;"></span>
+          重度速度超過
+        </div>
+        <div class="legend">
+          <span style="background-color: #FFB834;"></span>
+          軽度速度超過
+        </div>
+        <div class="legend">
+          <span style="background-color: #FF7EDD;"></span>
+          車線逸脱
+        </div>
+        <div class="legend">
+          <span style="background-color: #9C45D4;"></span>
+          強いGがかかった地点
+        </div>
+      </div>
+    </div>
+
     <button @click="pageBack">戻る
     </button>
   </div>
@@ -34,7 +54,7 @@ export default {
     this.initializeMap();
   },
   methods: {
-    pageBack(){
+    pageBack() {
       this.$router.push("/dashboard");
     },
     calculateCenter() {//各座標の平均をとり地図の中心を決める
@@ -78,11 +98,22 @@ export default {
                 ? '#9C45D4'
                 : '';
         const markerElement = document.createElement('div');//各座標に<div>を付与
-        markerElement.style.width = '12px';
-        markerElement.style.height = '12px';
-        markerElement.style.backgroundColor = color;
-        markerElement.style.borderRadius = '50%';
+        if (index == 0||(index == this.gps.length - 1)) { // 開始地点
+          markerElement.style.width = '24px'; // サイズを調整
+          markerElement.style.height = '24px';
+          markerElement.style.backgroundSize = 'cover'; // 画像を要素全体にフィットさせる
+          markerElement.style.backgroundPosition = 'center';
+          markerElement.style.borderRadius = '0'; // 必要に応じて形状を変更
+          markerElement.style.backgroundImage = `url(${require('@/assets/images/letter-e.png')})`; // 背景画像を設定
+          if(index==0)markerElement.style.backgroundImage = `url(${require('@/assets/images/letter-s.png')})`; // 背景画像を設定
+        } else {
+          markerElement.style.width = '12px';
+          markerElement.style.height = '12px';
+          markerElement.style.backgroundColor = color;
+          markerElement.style.borderRadius = '50%';
+        }
         markerElement.style.cursor = 'pointer';
+
         if (index == 0 || (index == this.gps.length - 1) || (gpsPoint.sFlg - this.gps[index - 1].sFlg) > 0 || (gpsPoint.lFlg - this.gps[index - 1].lFlg) == 1 || (gpsPoint.gFlg - this.gps[index - 1].gFlg) == 1) {
           //最初と最後、イベントで条件分け
           const popup = new mapboxgl.Popup({//popupを定義(ホバーでmessageを表示)

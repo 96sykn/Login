@@ -17,7 +17,6 @@
 </template>
 
 <script>
-//test
 import axios from "axios";
 import { mapMutations } from "vuex";
 import '@/assets/style.css';

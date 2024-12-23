@@ -61,10 +61,11 @@ if (password_verify($userpass, $user['password'])){
     echo json_encode($response);
     exit();
 }
-$stmt = $pdo->prepare("UPDATE users SET name = :name,password=:userpass WHERE userId = :userId");
+$hashpass = password_hash($userpass, PASSWORD_DEFAULT);
+$stmt = $pdo->prepare("UPDATE users SET name = :name,password=:hashpass WHERE userId = :userId");
 $stmt->bindParam(':name', $name);
 $stmt->bindParam(':userId', $userId);
-$stmt->bindParam(':userpass',$userpass);
+$stmt->bindParam(':hashpass',$hashpass);
 
 if ($stmt->execute()) {
     $response = [

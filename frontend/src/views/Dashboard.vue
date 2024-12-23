@@ -210,10 +210,10 @@ export default {
               : (formGps.sFlg === 2) ? '\n重度速度超過'
                 : '';
           }
-          if (formGps.lFlg == 1) {
+          if ((formGps.lFlg - this.formatGps[index - 1].lFlg) == 1) {
             this.formatGps[index].message += '\n車線逸脱';
           }
-          if (formGps.gFlg == 1) {
+          if ((formGps.gFlg - this.formatGps[index - 1].gFlg) == 1) {
             this.formatGps[index].message += '\n強いGがかかかりました';
           }
         }

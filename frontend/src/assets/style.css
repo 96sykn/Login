@@ -151,9 +151,9 @@ form {
     width: 100%;
 }
 
-.result-content button{
-    background-color:#ADB5BD;
-    color:#343a40;
+.result-content button {
+    background-color: #ADB5BD;
+    color: #343a40;
     text-align: right;
     border: none;
     padding: 10px 20px;
@@ -182,6 +182,33 @@ form {
 #map {
     width: 100%;
     height: 500px;
+    position: relative;
+}
+
+.legend-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 4px;
+    padding: 10px;
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
 }
 
 .commonButton {
