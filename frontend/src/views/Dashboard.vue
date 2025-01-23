@@ -3,15 +3,15 @@
     <main class="dashboard-content">
       <p v-if="userName">ようこそ、{{ userName }}さん！</p>
       <p v-else>ユーザー名が見つかりません。</p>
-      <section class="user-section">
+      <div class="dashboard-select-container">
         <select @change="disFormat" class="dashboard-select">
           <option selected disabled>時間を選択してください</option>
           <option v-for="(item, index) in formattedStartline" :key="index" :value="index">
             {{ item }}
           </option>
         </select>
-        <p v-if="error">{{ error }}</p>
-      </section>
+      </div>
+      <p v-if="error">{{ error }}</p>
     </main>
   </div>
 </template>
@@ -243,4 +243,5 @@ export default {
     },
   },
 };
+
 </script>

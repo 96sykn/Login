@@ -5,26 +5,30 @@
     </div>
     <div id="map">
       <div class="legend-container">
-        <div class="legend">
-          <span style="background-color: #FF0101;"></span>
-          重度速度超過
-        </div>
-        <div class="legend">
-          <span style="background-color: #FFB834;"></span>
-          軽度速度超過
-        </div>
-        <div class="legend">
-          <span style="background-color: #FF7EDD;"></span>
-          車線逸脱
-        </div>
-        <div class="legend">
-          <span style="background-color: #9C45D4;"></span>
-          強いGがかかった地点
+        <div class="legend-title">凡例</div>
+        <div class="legend-wrapper">
+          <div class="legend">
+            <span style="background-color: #FF0101;"></span>
+            <div>重度速度超過</div>
+          </div>
+          <div class="legend">
+            <span style="background-color: #FFB834;"></span>
+            <div>軽度速度超過</div>
+          </div>
+          <div class="legend">
+            <span style="background-color: #FF7EDD;"></span>
+            <div>車線逸脱</div>
+          </div>
+          <div class="legend">
+            <span style="background-color: #9C45D4;"></span>
+            <div>強いGがかかった地点</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <button @click="pageBack">戻る
+    <button @click="pageBack" class="back-button">
+      戻る
     </button>
   </div>
 </template>
@@ -229,3 +233,178 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.result-content {
+    padding: 1rem;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .result-content {
+        padding: 2rem;
+    }
+}
+
+#content {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    #content {
+        margin-bottom: 2rem;
+    }
+}
+
+h2 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    background: var(--card-background);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: inline-block;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    h2 {
+        font-size: 1.5rem;
+        padding: 1rem 1.5rem;
+    }
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    #map {
+        height: 600px;
+        margin-bottom: 2rem;
+    }
+}
+
+.legend-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    font-size: 0.875rem;
+    max-width: calc(100% - 20px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 768px) {
+    .legend-container {
+        top: 20px;
+        right: 20px;
+        padding: 1rem;
+        font-size: 1rem;
+        max-width: 300px;
+    }
+}
+
+.legend-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    margin: 0.25rem 0;
+    color: var(--text-primary);
+    font-size: 0.85em;
+}
+
+.legend span {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .legend span {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.75rem;
+    }
+}
+
+.legend-wrapper {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+}
+
+.legend-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+
+.legend-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.legend-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2),
+                0 2px 4px -2px rgba(99, 102, 241, 0.1);
+}
+
+@media (min-width: 768px) {
+    .back-button {
+        width: auto;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+.back-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(99, 102, 241, 0.3),
+                0 4px 6px -2px rgba(99, 102, 241, 0.2);
+}
+
+@media (hover: none) {
+    .back-button:hover {
+        transform: none;
+    }
+}
+</style>

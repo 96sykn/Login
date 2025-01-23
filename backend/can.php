@@ -37,9 +37,41 @@ try {
     die(json_encode(['success' => false, 'message' => 'データベース接続失敗']));
 }
 
-$sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw, time FROM CAN WHERE time > :selectedTime AND ign = 'IGN-OFF' ORDER BY time LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, time FROM CAN WHERE time >= :selectedTime AND time <= (SELECT time FROM endTime) ORDER BY time";
-if ($userId == 'testuser')
-    $sql = "WITH endTime AS (SELECT id, ign, VehicleSpeed, ldw,time FROM testCAN WHERE time > :selectedTime AND ign = 'IGN-OFF' ORDER BY time LIMIT 1) SELECT id, ign, VehicleSpeed, ldw, time AS time FROM testCAN WHERE time >= :selectedTime AND time <= (SELECT time FROM endTime) ORDER BY time";
+$sql = "WITH RECURSIVE 
+    filtered_data AS (
+        SELECT DISTINCT ign, VehicleSpeed, ldw, time
+        FROM CAN 
+        WHERE time >= :selectedTime
+        ORDER BY time
+    ),
+    endTime AS (
+        SELECT MIN(time) as end_time
+        FROM filtered_data
+        WHERE time > :selectedTime AND ign = 'IGN-OFF'
+    )
+SELECT ign, VehicleSpeed, ldw, time 
+FROM filtered_data
+WHERE time <= (SELECT end_time FROM endTime)
+ORDER BY time";
+
+if ($userId == 'testuser') {
+    $sql = "WITH RECURSIVE 
+        filtered_data AS (
+            SELECT DISTINCT ign, VehicleSpeed, ldw, time
+            FROM testCAN 
+            WHERE time >= :selectedTime
+            ORDER BY time
+        ),
+        endTime AS (
+            SELECT MIN(time) as end_time
+            FROM filtered_data
+            WHERE time > :selectedTime AND ign = 'IGN-OFF'
+        )
+    SELECT ign, VehicleSpeed, ldw, time 
+    FROM filtered_data
+    WHERE time <= (SELECT end_time FROM endTime)
+    ORDER BY time";
+}
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam('selectedTime', $selectedTime);
 if ($stmt->execute()) {
