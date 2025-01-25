@@ -1,9 +1,11 @@
+<?php
 /**
  * ログイン処理を担当するエンドポイント
  * ユーザーの認証と基本情報の取得を行う
  */
 
-<?php
+ob_start(); // 出力バッファリングの開始
+
 // CORSヘッダーの設定
 header("Access-Control-Allow-Origin: http://2024isc1231028.weblike.jp");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -19,9 +21,6 @@ ini_set('error_log', __DIR__ . '/error.log');
 /**
  * カスタムエラーハンドラー
  * エラーメッセージの生成とログ記録を行う
- * 
- * @param string $message エラーメッセージ
- * @param int $status HTTPステータスコード
  */
 function handleError($message, $status = 500) {
     $userMessage = "システムエラーが発生しました。しばらく時間をおいて再度お試しください。";
@@ -33,7 +32,6 @@ function handleError($message, $status = 500) {
         $userMessage = "入力内容に誤りがあります。";
     }
     
-    // エラーをログに記録
     error_log(json_encode([
         'error' => $message,
         'time' => date('Y-m-d H:i:s'),
@@ -64,7 +62,7 @@ if (!isset($data['userId']) || !isset($data['password']) || empty($data['userId'
 }
 
 // 入力値のサニタイズ
-$userId = filter_var($data['userId'], FILTER_SANITIZE_STRING);
+$userId = htmlspecialchars($data['userId'], ENT_QUOTES, 'UTF-8');
 $userpass = $data['password'];
 
 // データベース接続情報を定数として定義
@@ -113,4 +111,6 @@ if ($user && password_verify($userpass, $user['password'])) {
 // JSONレスポンスの送信
 header('Content-Type: application/json');
 echo json_encode($response);
+
+ob_end_flush(); // 出力バッファリングの終了
 ?>
