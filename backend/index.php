@@ -1,36 +1,103 @@
 <?php
+/**
+ * ログイン処理を担当するエンドポイント
+ * ユーザーの認証と基本情報の取得を行う
+ */
+
+ob_start(); // 出力バッファリングの開始
+
+// CORSヘッダーの設定
 header("Access-Control-Allow-Origin: http://2024isc1231028.weblike.jp");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 
+// エラーハンドリング設定
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
+
+/**
+ * カスタムエラーハンドラー
+ * エラーメッセージの生成とログ記録を行う
+ */
+function handleError($message, $status = 500) {
+    $userMessage = "システムエラーが発生しました。しばらく時間をおいて再度お試しください。";
+    if ($status === 401) {
+        $userMessage = "認証に失敗しました。";
+    } elseif ($status === 404) {
+        $userMessage = "リクエストされたリソースが見つかりません。";
+    } elseif ($status === 400) {
+        $userMessage = "入力内容に誤りがあります。";
+    }
+    
+    error_log(json_encode([
+        'error' => $message,
+        'time' => date('Y-m-d H:i:s'),
+        'url' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+        'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown'
+    ]));
+    
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => $userMessage
+    ]);
+    exit();
+}
+
+// プリフライトリクエストの処理
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
+// リクエストボディの取得
 $data = json_decode(file_get_contents('php://input'), true);
-$userId = $data['userId'];
-$userpass = $data['password'];
 
-$host = 'mysql309.phy.lolipop.lan';
-$dbname = 'LAA1593625-test';
-$username = 'LAA1593625';
-$password = 'testTEST';
-$port = '3306';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;port=$port;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die(json_encode(['success' => false, 'message' => 'データベース接続失敗']));
+// 入力値のバリデーション
+if (!isset($data['userId']) || !isset($data['password']) || empty($data['userId']) || empty($data['password'])) {
+    handleError("必須項目が入力されていません。", 400);
 }
 
+// 入力値のサニタイズ
+$userId = htmlspecialchars($data['userId'], ENT_QUOTES, 'UTF-8');
+$userpass = $data['password'];
+
+// データベース接続情報を定数として定義
+define('DB_HOST', 'mysql309.phy.lolipop.lan');
+define('DB_NAME', 'LAA1593625-test');
+define('DB_USER', 'LAA1593625');
+define('DB_PASS', 'testTEST');
+define('DB_PORT', '3306');
+
+// データベース接続
+try {
+    $pdo = new PDO(
+        "mysql:host=" . DB_HOST . 
+        ";dbname=" . DB_NAME . 
+        ";port=" . DB_PORT . 
+        ";charset=utf8",
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+} catch (PDOException $e) {
+    handleError($e->getMessage());
+}
+
+// ユーザー情報の取得
 $stmt = $pdo->prepare('SELECT * FROM users WHERE userId = :userId');
 $stmt->bindParam(':userId', $userId);
 $stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch();
 
+// パスワードの検証と応答の生成
 if ($user && password_verify($userpass, $user['password'])) {
     $response = [
         'success' => true,
@@ -38,12 +105,12 @@ if ($user && password_verify($userpass, $user['password'])) {
         'name' => $user['name']
     ];
 } else {
-    $response = [
-        'success' => false,
-        'message' => 'ユーザIDまたはパスワードが間違っています。'
-    ];
+    handleError("ユーザIDまたはパスワードが間違っています。", 401);
 }
 
+// JSONレスポンスの送信
 header('Content-Type: application/json');
 echo json_encode($response);
+
+ob_end_flush(); // 出力バッファリングの終了
 ?>
